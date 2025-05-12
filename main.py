@@ -1,37 +1,39 @@
-import customtkinter as ctk
-#from easyocr import Reader
-from pypdf import PdfReader
-# Настройки темы
-ctk.set_appearance_mode("dark")
-ctk.set_default_color_theme("dark-blue")  # Можно заменить на 'black'
+import pytesseract
+from pdf2image import convert_from_path
+import numpy as np
+import cv2
+import streamlit as st
+import tempfile
+import os
 
-# Главное окно
-app = ctk.CTk()
-app.geometry("400x300")
-app.title("Ввод и вывод текста")
+ 
+result_text = ''
+st.title("Text from any pdf (ONLY FOR PDF)")
 
-# Функция обработки ввода
-def on_click():
-    name = input_field.get()
-    if 'pdf' in  name:
-        reader = PdfReader(name)
-        t = ''
-        for page in reader.pages:
-            t += page.extract_text()
-        print(t)
+
+a = st.file_uploader("Chose a file")
+
+
+if a is not None:
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
+        tmp_file.write(a.getvalue())  # Сохраняем содержимое загруженного файла
+        pdf_path = tmp_file.name 
+    try:
+            
+        images = convert_from_path(pdf_path,dpi = 300)
         
-    output_label.configure(text= t)
+        
+        for i, image in enumerate(images):
+            gray_image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2GRAY)
+            _, threshold_image = cv2.threshold(gray_image, 150, 255, cv2.THRESH_BINARY)
+            
+            # 3. Распознаём текст с помощью Tesseract
+            text = pytesseract.image_to_string(threshold_image, lang='rus+eng')  # Языки: русский + английский
+            result_text += f"Страница {i+1}:\n{text}\n\n" 
+        r = st.text_area('Result',value = result_text)
+        st.success('All done !')
+    except FileNotFoundError:    
+        st.error("This file doesnt exist on your computer")    
 
-# Поле ввода
-input_field = ctk.CTkEntry(app, placeholder_text="Введите текст...")
-input_field.pack(pady=20, padx=20)
-
-# Кнопка
-submit_button = ctk.CTkButton(app, text="Показать текст", command=on_click)
-submit_button.pack(pady=10)
-
-# Поле вывода
-output_label = ctk.CTkLabel(app, text="", wraplength=300)
-output_label.pack(pady=20)
-
-app.mainloop()
+print(a)
+print(result_text)
