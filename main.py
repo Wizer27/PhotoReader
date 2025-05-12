@@ -5,6 +5,7 @@ import cv2
 import streamlit as st
 import tempfile
 import os
+os.environ["OPENCV_IO_ENABLE_OPENEXR"] = "1" 
 
  
 result_text = ''
