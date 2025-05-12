@@ -6,8 +6,9 @@ libglib2.0-0
 libsm6
 libxrender1
 libxext6
-libgl1-mesa-dev
+libgl1-mesa-glx
 libegl1
+libgomp1
 libgtk-3-0
 libqt5gui5
 libqt5webkit5
