@@ -8,3 +8,7 @@ libxrender1
 libxext6
 libgl1-mesa-dev
 libegl1
+libgtk-3-0
+libqt5gui5
+libqt5webkit5
+libqt5x11extras5
