@@ -5,6 +5,9 @@ import cv2
 import streamlit as st
 import tempfile
 import os
+from easyocr import Reader
+
+
 os.environ["OPENCV_IO_ENABLE_OPENEXR"] = "1" 
 
  
@@ -15,6 +18,7 @@ st.title("Text from any pdf (ONLY FOR PDF)")
 a = st.file_uploader("Chose a file")
 
 if a is not None:
+    print(a)
     name = a.name
     print(f"Name: {name}")
     n = name.split('.')
@@ -37,7 +41,13 @@ if a is not None:
             r = st.text_area('Result',value = result_text)
             st.success('All done !')
         except FileNotFoundError:    
-            st.error("This file doesnt exist on your computer")    
+            st.error("This file doesnt exist on your computer")  
+    if n[1]  == "jpg":
+        file_bytes = np.asarray(bytearray(a.read()), dtype=np.uint8)
+        img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)     
+        reader = easyocr.Reader(['ru', 'en'])
+        result = reader.readtext(img, detail=0)  # detail=0 возвращает только текст
+        st.write(result)
 
 print(a)
 print(result_text)
