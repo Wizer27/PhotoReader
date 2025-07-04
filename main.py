@@ -14,8 +14,9 @@ st.title("Text from any pdf (ONLY FOR PDF)")
 
 a = st.file_uploader("Chose a file")
 
-
 if a is not None:
+    name = a.name
+    print(f"Name: {name}")
     with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
         tmp_file.write(a.getvalue())  # Сохраняем содержимое загруженного файла
         pdf_path = tmp_file.name 
