@@ -45,7 +45,7 @@ if a is not None:
     if n[1]  == "jpg":
         file_bytes = np.asarray(bytearray(a.read()), dtype=np.uint8)
         img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)     
-        reader = easyocr.Reader(['ru', 'en'])
+        reader = Reader(['ru', 'en'])
         result = reader.readtext(img, detail=0)  # detail=0 возвращает только текст
         st.write(result)
 
