@@ -51,3 +51,5 @@ if a is not None:
 
 print(a)
 print(result_text)
+def test():
+  pass
